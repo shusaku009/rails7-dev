@@ -1,5 +1,5 @@
 require 'minitest/autorun'
-require_relative '../ib/rgb'
+require_relative '../lib/rgb'
 
 class RgbTest < Minitest::Test
   def test_to_hex
