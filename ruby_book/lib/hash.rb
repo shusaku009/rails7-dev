@@ -201,3 +201,48 @@ b = h[:bar]
 h = Hash.new { |hash, key| hash[key] = 'hello' }
 h[:foo]
 h[:bar]
+
+name = 'Alice'
+:"#{name.upcase}"
+
+# "文字列リテラル: 値の形式で書くと、キーがシンボルになる"
+hash = { 'abc': 123}
+
+# !を区切り文字に使う
+%s!ruby is fun!
+
+# ()を区切り文字に使う
+%s(ruby is fun)
+
+# シンボルの配列を作成するときには%iを使う
+%i(apple orange melon)
+
+name = 'Alice'
+
+# %iでは改行文字や式展開がそのままシンボルになる
+%i(hello\ngood-bye #{name.upcase})
+
+# %Iでは改行文字や式展開が有効になった上でシンボルが作られる
+%I(hello\ngood-bye #{name.upcase})
+
+string = 'apple'
+symbol = :apple
+# to_symメソッドを使うと文字列をシンボルに変換することができる
+string.to_sym
+string.to_sym == symbol
+
+string = 'apple'
+symbol - :apple
+
+symbol.to_s
+string == symbol.to_s
+string + symbol.to_s
+
+# respornd_to?メソッドの引数には文字列とシンボルの両方を渡せる
+'apple'.respond_to?('include?')
+'apple'.respond_to?(:include?)
+
+# 文字列に'pp'が含まれているか調べる
+'apple'.include?('pp')
+# シンボルを引数で渡すとエラーになる
+'apple'.include?(:pp)
