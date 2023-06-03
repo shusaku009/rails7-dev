@@ -143,3 +143,61 @@ b = ['fish', drink: true, potato: false]
 b[0]
 b[1]
 
+def buy_burger(options = {}, menu)
+  puts options
+end
+# このコードはエラーになる、Rubyはブロックの{}だと解釈されるため
+buy_burger{'drink' => true, 'potato' => false}, fish
+
+# 第1引数にハッシュの{}がつく場合は()を省略できない
+buy_burger({'drink' => true, 'potato' => false}, 'fish')
+
+def buy_burger(menu,options = {})
+puts options
+end
+# 第2引数以降にハッシュの{}が付く場合は()を省略することができる
+buy_burger 'fish', {'drink' => true, 'potato' =>false}
+
+# ついうっかり「ハッシュの内容をターミナルに出力したい→エラー」
+puts { foo: 1, bar: 2}
+# ()で囲む必要がある
+puts ({ foo: 1, bar: 2 })
+
+# ついうっかり2 「resalutの内容が指定したハッシュの内容に一致するか検証したい→エラー」
+assert_equal { foo: 1, bar: 2},resault
+# ()で囲む必要がある
+assert_equal({ foo: 1, bar: 2},resault)
+
+# to_aメソッドでハッシュから配列へ
+currencies = { japan: 'yen', us: 'dollar', india: 'rupee' }
+currencies.to_a
+
+array = [[:japan, "yen"], [:us, "dollar"], [:india, "rupee"]]
+array.to_h
+
+array = [:japan, "yen", :us, "dollar", :india, "rupee"]
+Hash[*array]
+
+h = {}
+h[:foo]
+
+h = Hash.new('hello')
+h[:foo]
+
+h = Hash.new('hello')
+a = h[:foo]
+b = h[:bar]
+# aとbは同一オブジェクト
+a.equal?(b) 
+
+# 変数aに破壊的な変更を適用すると、変数bの値も一緒に変わってしまう
+a.upcase!
+
+# キーが見つからないとブロックがその都度実行され、ブロックの戻り値がデフォルトになる
+h = Hash.new { 'hello' }
+a = h[:foo]
+b = h[:bar]
+
+h = Hash.new { |hash, key| hash[key] = 'hello' }
+h[:foo]
+h[:bar]
