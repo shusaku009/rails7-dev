@@ -303,3 +303,23 @@ regexp = Regexp.new(pattern, Regexp::EXTENDED)
 
 regexp = Regexp.new('Hello.Bye', Regexp::IGNORECASE | Regexp::MULTILINE)
 "HELLO\nBYE" =~ /Hello.Bye/im
+
+text = '私の誕生日は1977年7月17日です'
+
+# =~ 演算子などを使うと、マッチした結果をRegexp.last_matchで取得できる
+text =~ /(\d+)年(\d+)月(\d+)日/
+
+# MatchDataオブジェクト
+Regexp.last_match
+
+# マッチした部分全体を取得する
+Regexp.last_match(0)
+
+# 1~3番目のキャプチャを取得する
+Regexp.last_match(1)
+Regexp.last_match(2)
+Regexp.last_match(3)
+
+# 最後のキャプチャ文字列を取得する
+Regexp.last_match(-1)
+
