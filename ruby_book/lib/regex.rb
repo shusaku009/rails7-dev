@@ -323,3 +323,12 @@ Regexp.last_match(3)
 # 最後のキャプチャ文字列を取得する
 Regexp.last_match(-1)
 
+# マッチすればtrueを返す
+/\d{3}-\d{4}/.match?('123-4567')
+
+# マッチしても組み込み変数やRegexp.last_matchを書き換えない
+$~
+Regexp.last_match
+
+# 文字列と正規表現を入れ替えてもOK
+'123-4567'.match?(/\d{3}-\d{4}/)
