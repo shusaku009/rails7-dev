@@ -226,3 +226,80 @@ text.gsub(
 text.gsub(/(?<year>\d+)年(?<month>\d+)月(?<day>\d+)日/) do
   "#{$~[:year]}-#{$~[:month]}-#{$~[:day]}"
 end
+
+# /\d{3}-\d{4}と書いたのと同じ
+Regexp.new('\d{3}-\d{4}')
+
+# スラッシュで囲むと、スラッシュをエスケープする必要がある
+/https:\/\/example\.com/
+
+# %rを使うとスラッシュをエスケープしなくて良い
+%r!https://example\.com!
+
+# !ではなく{}を区切り文字にする
+%r{https://example\.com}
+
+pattem = '\d{3}-\d{4}'
+# 変数が展開されるので/\d{3}-\d{4}/と書いたことと同じになる
+'123-4567' =~ /#{pattem}/
+
+text = '03-1234-5678'
+
+case text
+when /^\d{3}-\d{4}$/
+  puts '郵便番号です'
+when /^\d{4}\/\d{1,2}\/\d{1,2}$/
+when /^\d+-\d+-\d+$/
+  puts '電話番号です'
+end
+
+$& #=> "03-1234-5678"
+$~ #=> #<MatchData "03-1234-5678">
+
+# iオプションを付けると大文字小文字を区別しない
+'HELLO' =~ /hello/i
+
+# %rを使った場合も最後にオプションを付けられる
+'HELLO' =~ %r{hello}i
+
+regexp = Regexp.new('hello', Regexp::IGNORECASE)
+'HELLO' =~ regexp
+
+# mオプションがないと.は改行文字にマッチしない
+"HELLO\nBye" =~ /Hello.Bye/
+
+# mオプションを付けると.が改行文字にもマッチする
+"Hello\nBye" =~ /Hello.Bye/m
+
+regexp = Regexp.new('Hello.Bye', Regexp::MULTILINE)
+"Hello\nBye" =~ regexp
+
+regexp = /
+  \d{3} # 郵便番号の先頭3桁
+  -  # 区切り文字のハイフン
+  \d{4} # 郵便番号の末尾4桁
+/x
+'123-4567' =~ regexp
+
+regexp = /
+  \d{3}
+  \  # 半角スペースで区切る
+  \d{4}
+/x
+'123 4567' =~ regexp
+
+# バックスラッシュを特別扱いしないように'TEXT'を使う
+
+pattern = <<'TEXT'
+  \d{3} #郵便番号の先頭3桁
+  - #区切り文字のハイフン
+  \d{4} #郵便番号の末尾4桁
+TEXT
+regexp = Regexp.new(pattern, Regexp::EXTENDED)
+'123-4567' =~ regexp
+
+# iオプションとmオプションを同時に使う
+"HELLO\nBYE" =~ /Hello.Bye/im
+
+regexp = Regexp.new('Hello.Bye', Regexp::IGNORECASE | Regexp::MULTILINE)
+"HELLO\nBYE" =~ /Hello.Bye/im
