@@ -168,3 +168,124 @@ class User
 end
 user = User.new('Alice')
 user.hello
+
+class User
+  def initialize(name)
+    # インスタンス作成時に渡された名前をインスタンス変数に保存する
+    @name = name
+  end
+
+  def hello
+    # わざとローカル変数への代入をコメントアウトする
+    # shuffled_name = @name.chars.shuffle.join
+    "Hello, I am #{shuffled_name}"
+  end
+end
+user = User.new('Alice')
+user.hello
+
+class User
+  def initialize(name)
+    # インスタンス作成時に渡された名前をインスタンス変数に保存する
+    # @name = name
+  end
+
+  def hello
+    "Hello, I am #{@name}"
+  end
+end
+user = User.new('Alice')
+# @nameを参照するとnilになる(つまり名前の部分に何もない)
+user.hello
+
+class User
+  def initialize(name)
+    # インスタンス作成時に渡された名前をインスタンス変数に保存する
+    @name = name
+  end
+
+  # @nameを外部から参照するためのメソッド
+  def name
+    @name
+  end
+end
+user = User.new('Alice')
+user.name
+
+class User
+  def initialize(name)
+    @name = name
+  end
+
+  # @nameを外部から参照するためのメソッド
+  def name
+    @name
+  end
+
+  # @nameを外部から変更するためのメソッド
+  def name=(value)
+    @name = value
+  end
+end
+user = User.new('Alice')
+# 変数に代入しているように見えるが、実際はname = メソッドを呼び出している
+user.name = 'Bob'
+user.name
+
+class User
+  # @nameを読み書きするメソッドが自動的に定義される
+  attr_accessor :name
+
+  def initialize(name)
+    @name = name
+  end
+
+  # nameメソッドやname=メソッドを明示的に定義する必要はない
+end
+user = User.new('Alice')
+# @nameを変更する
+user.name = 'Bob'
+# @nameを参照する
+user.name
+
+class User
+  # 読み取り専用のメソッドだけを定義する
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
+end
+user = User.new('Alice')
+# @nameの参照はできる
+user.name
+
+# @nameを変更しようとするとエラーになる
+user.name = 'Bob'
+
+class User
+  # 書き込み専用のメソッドだけを定義する
+  attr_writer :name
+
+  def initialize(name)
+    @name = name
+  end
+end
+user = User.new('Alice')
+# @nameは変更できる
+user.name = 'Bob'
+# @nameの参照はできない
+user.name
+
+class User
+  # @nameとへのアクセスメソッドを定義する
+  attr_accessor :name, :age
+
+  def initialize(name, age)
+    @name = name
+    @age = age
+  end
+end
+user = User.new('Alice', 20)
+user.name
+user.age
