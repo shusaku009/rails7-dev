@@ -289,3 +289,67 @@ end
 user = User.new('Alice', 20)
 user.name
 user.age
+
+class User
+  def hello
+    'Hello.'
+  end
+end
+
+# このクラス定義は既存のUserクラスにbyeメソッドを追加することになる
+class User
+  def bye
+    'Bye.'
+  end
+end
+
+user = User.new
+# helloメソッドも呼び出せる
+user.hello
+user.bye
+
+class User
+  def initialize(name)
+    @name = name
+  end
+
+  # これはインスタンスメソッド
+  def hello
+    # @nameの値はインスタンスによって異なる
+    "Hello, I am #{@name}"
+  end
+end
+alice = User.new('Alice')
+# インスタンスメソッドはインスタンス(オブジェクト)に対して呼び出す
+alice.hello
+
+bob = User.new('Bob')
+# インスタンスによって内部のデータが異なるので、helloメソッドの結果も異なる
+bob.hello
+
+class User
+  def initialize(name)
+    @name = name
+  end
+
+  # self.をつけるとクラスメソッドになる
+  def self.create_users(names)
+    names.map do |name|
+      User.new(name)
+    end
+  end
+
+  # これはインスタンスメソッド
+  def hello
+    "Hello, I am #{@name}."
+  end
+end
+
+names = ['Alice', 'Bob', 'Carol']
+# クラスメソッドの呼び出し
+users = User.create_users(names)
+users.each do |user|
+  # インスタンスメソッドの呼び出し
+  puts user.hello
+end
+
