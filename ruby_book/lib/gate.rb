@@ -22,3 +22,34 @@ class Gate
     FARES[distance - 1]
   end
 end
+
+class Foo
+  # 注:このクラスはクラス定義の読込み時に呼び出される
+  puts "クラス構文の直下のself: #{self}"
+
+  def self.bar
+    puts "クラスメソッド内のself: #{self}"
+  end
+
+  def baz
+    puts "インスタンスメソッド内のself: #{self}"
+  end
+end
+
+Foo.bar
+
+foo = Foo.new
+foo.baz
+
+class Foo
+  # この時点ではクラスメソッドbarが定義されていないので呼び出せない
+  # self.bar => {NoMethodErrorが発生}
+
+  def self.bar
+    puts "hello"
+  end
+
+  # クラス構文の直下でクラスメソッドを呼び出す
+  # (クラスメソッドbarが定義された後なので、呼び出せる)
+  self.bar
+end
