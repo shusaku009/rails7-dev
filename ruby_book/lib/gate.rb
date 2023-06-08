@@ -82,3 +82,40 @@ Product.format_price(price)
 
 # self.class.メソッド名の形式でクラスメソッドを呼び出す
 self.class.format_price(price)
+
+class User
+
+end
+
+user = User.new
+user.to_s
+user.nil?
+
+User.superclass
+
+user = User.new
+user.methods.sort
+
+user = User.new
+user.class
+
+user = User.new
+
+# userはUserクラスのインスタンスか？
+user.instance_of?(User)
+
+# userはStringクラスのインスタンスか？
+user.instance_of?(String)
+
+user = User.new
+
+# instance_of?は引数で指定したクラスそのもののインスタンスでないとtrueにならない
+user.instance_of?(Object)
+
+# is_a?はis-a関係にあればtrueになる
+user.is_a?(User)
+user.is_a?(Object)
+user.is_a?(BasicObject)
+
+# is-a関係にない場合はfalse
+user.is_a?(String)
