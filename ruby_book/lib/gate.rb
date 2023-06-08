@@ -198,3 +198,91 @@ end
 dvd = DVD.new('A great movie', 1000)
 dvd.name
 dvd.price
+
+class Product
+  attr_accessor :name, :price
+
+  def initialize(name, price)
+    @name = name
+    @price = price
+  end
+end
+
+class DVD < Product
+  attr_reader :running_time
+
+  def initialize(name, price, running_time)
+    super(name, price)
+    @running_time = running_time
+  end
+end
+
+product = Product.new('A great movie', 1000)
+product.to_s
+
+dvd = DVD.new('An awesome film',3000, 120)
+dvd.to_s
+
+class Product
+  attr_accessor :name, :price
+
+  def initialize(name, price)
+    @name = name
+    @price = price
+  end
+
+  def to_s
+    "name: #{name}, price: #{price}"
+  end
+end
+
+class DVD < Product
+  attr_reader :running_time
+
+  def initialize(name, price, running_time)
+    super(name, price)
+    @running_time = running_time
+  end
+
+  def to_s
+    "name: #{name}, price: #{price}, running_time: #{running_time}"
+  end
+end
+
+product = Product.new('A great movie', 1000)
+product.to_s
+
+dvd = DVD.new('An awesome film',3000, 120)
+dvd.to_s
+
+class Product
+  attr_accessor :name, :price
+
+  def initialize(name, price)
+    @name = name
+    @price = price
+  end
+
+  def to_s
+    "name: #{name}, price: #{price}"
+  end
+end
+
+class DVD < Product
+  attr_reader :running_time
+
+  def initialize(name, price, running_time)
+    super(name, price)
+    @running_time = running_time
+  end
+
+  def to_s
+    "#{super}, running_time: #{running_time}"
+  end
+end
+
+product = Product.new('A great movie', 1000)
+product.to_s
+
+dvd = DVD.new('An awesome film',3000, 120)
+dvd.to_s
