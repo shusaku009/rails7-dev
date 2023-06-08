@@ -286,3 +286,15 @@ product.to_s
 
 dvd = DVD.new('An awesome film',3000, 120)
 dvd.to_s
+
+class Foo
+  def self.hello
+    'hello'
+  end
+end
+
+class Bar < Foo
+end
+
+Foo.hello
+Bar.hello
