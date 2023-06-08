@@ -76,3 +76,9 @@ end
 
 product = Product.new('A greet movie', 100)
 product.to_s
+
+#クラス名.メソッド名の形式でクラスメソッドを呼び出す
+Product.format_price(price)
+
+# self.class.メソッド名の形式でクラスメソッドを呼び出す
+self.class.format_price(price)
