@@ -349,3 +349,58 @@ def greet(name:, **)
 end
 
 greet(name: 'Alice', friend: 'Bob')
+
+class User
+  # デフォルトはpublic
+  def hello
+    'Hello!'
+  end
+end
+
+user = User.new
+# publicメソッドなのでクラス外から呼び出せる
+user.hello
+
+class User
+  # ここから下で定義されたメソッドはprivate
+  private
+
+  def hello
+    'Hello!'
+  end
+end
+user = User.new
+# privateメソッドなのでクラスの外部からは呼び出せない
+user.hello
+
+class User
+  def hello
+    # Ruby 2.6以前 = selfをつけるとエラー
+    # Ruby 2.7以降 = selfを付けても付けなくてもOK
+    "Hello, I am #{self.name}"
+  end
+
+  private
+
+  def name
+    'Alice'
+  end
+end
+user = User.new
+
+# Ruby 2.6以前 = エラーになる
+user.hello
+
+class User
+  # ここから下はprivateメソッド
+  private
+
+  def foo
+  end
+
+  # ここから下はpubulicメソッド
+  public
+
+  def bar
+  end
+end
