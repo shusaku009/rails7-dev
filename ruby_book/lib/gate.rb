@@ -298,3 +298,54 @@ end
 
 Foo.hello
 Bar.hello
+
+class Product
+  def initialize(name, price)
+    puts "name: #{name}, price: #{price}"
+  end
+end
+
+class DVD < Product
+  # initialize(name, price)としてもいいが、このメソッドでは引数を使わないので
+  # 可変長引数として一旦任意の引数を受け取り、そのままsuperメソッドに渡す
+  def initialize(*)
+    super
+  end
+end
+
+DVD.new('An awesome film', 1000)
+
+class Product
+  def initialize(name, price: 0)
+    puts "name: #{name}, price: #{price}"
+  end
+end
+
+class DVD < Product
+  # Ruby 2.7までは(*)だけでもキーワード引数をsuperメソッドに渡せたが、
+  # Ruby 3.0では*とは別に**でキーワード引数を受け取る必要がある
+  def initialize(*, **)
+    super
+  end
+end
+
+DVD.new('An awesome film', price: 1000)
+
+# ...引数を使って通常の引数もキーワード引数もすべて受け取れるようにする
+def initialize(...)
+  super
+end
+
+# 最初の2つの引数のみを使い、他の引数は無視する
+def add(a, b, *)
+  a + b
+end
+
+add(1 ,2 ,3, 4, 5)
+
+# name以外のキーワード引数を無視する
+def greet(name:, **)
+  "Hello, #{name}"
+end
+
+greet(name: 'Alice', friend: 'Bob')
