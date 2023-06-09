@@ -509,3 +509,53 @@ class User
   private_class_method :hello
 end
 User.hello
+
+class User
+  # いったんpublicメソッドとして定義する
+  def foo
+    'foo'
+  end
+
+  def bar
+    'bar'
+  end
+
+  # fooとbarをprivateメソッドに変更する
+  private :foo, :bar
+
+  # bazはpublicメソッド
+  def baz
+    'baz'
+  end
+end
+
+user = User.new
+user.foo
+user.bar
+user.baz
+
+class User
+  # メソッド定義の戻り値:fooをprivateキーワード(実際はメソッド)の引数とする
+  # 結果としてfooはprivateメソッドになる
+  private def foo
+    'foo'
+  end
+end
+
+user = User.new
+user.foo
+
+class User
+  attr_accessor :name
+
+  #ゲッターメソッドとセッターメソッドをそれぞれprivateメソッドにする
+  private :name, :name=
+
+  def initialize(name)
+    @name = name
+  end
+end
+
+user = User.new('Alice')
+user.name
+user.name = 'Bob'
