@@ -596,3 +596,54 @@ class User
   # weightメソッドの定義と同時にprotectedメソッドにする(Ruby 3.0以上なら有効)
   protected attr_reader :weight
 end
+
+class Product
+  DEFAULT_PRICE = 0
+end
+
+Product::DEFAULT_PRICE
+
+class Product
+  DEFAULT_PRICE = 0
+  # 定数をprivateにする
+  private_constant :DEFAULT_PRICE
+end
+
+# privateなのでクラスの外部からは参照できない
+Product::DEFAULT_PRICE
+
+def foo
+  # メソッドの内部で定数を定義しようとすると構文エラーになる
+  BAR = 123
+
+  BAR * 10
+end
+
+# トップレベルで定義する定数
+SOME_VALUE = 123
+
+class Product
+  # クラス構文の直下で定義する定数
+  DEFAULT_PRICE = 0
+end
+
+class TrafficLight
+  # 配列COLORSを定数として定義し、その各要素も定数として同時に定義する
+  COLORS = [
+    GREEN = 0,
+    YELLOW = 1,
+    RED = 2
+  ]
+end
+
+TrafficLight::GREEN
+TrafficLight::YELLOW
+TrafficLight::RED
+TrafficLight::COLORS
+
+# mapメソッドの戻り値を定数に代入する
+NUMBERS = [1, 2, 3].map { |n| n * 10 }
+NUMBERS
+
+# 三項演算子を使った条件分岐の結果を定数に代入する
+NEW_LINE = windows?  ? "\r\n":"\n"
