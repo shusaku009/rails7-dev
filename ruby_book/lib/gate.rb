@@ -647,3 +647,102 @@ NUMBERS
 
 # 三項演算子を使った条件分岐の結果を定数に代入する
 NEW_LINE = windows?  ? "\r\n":"\n"
+
+class Product
+  DEFAULT_PRICE = 0
+  # 再代入して定数の値を書き換える
+  DEFAULT_PRICE = 10000
+end
+
+# 再代入後の値が返る
+Product::DEFAULT_PRICE
+
+# クラスの外部からでも再代入が可能
+Product::DEFAULT_PRICE = 30000
+
+# クラスを凍結する
+Product.freeze
+
+# freezeすると変更できなくなる
+Product::DEFAULT_PRICE = 5000
+
+class Product
+  DEFAULT_PRICE = 0
+  # freezeすれば再代入を防止できるが、デメリットのほうが大きので普通はしない
+  freeze
+  DEFAULT_PRICE = 1000
+end
+
+class Product
+  NAME = 'A product'
+  SOME_NAMES = ['Foo', 'Bar', 'Baz']
+  SOME_PRICE = [foo: 1000, bar: 2000, baz: 3000]
+end
+
+# 文字列を破壊的に大文字に変更する
+Product::NAME.upcase!
+Product::NAME
+
+# 配列に新しい要素を追加する
+Product::SOME_NAMES << 'Hoge'
+Product::SOME_NAMES
+
+# ハッシュに新しいキーと値を追加する
+Product::SOME_PRICE[:hoge] = 4000
+Product::SOME_PRICE
+
+class Product
+  SOME_NAMES = ['Foo', 'Bar', 'Baz']
+
+  def self.names_without_foo(names = SOME_NAMES)
+    # namesがデフォルト値だと、以下のコードは定数のSOME_NAMESを破壊的に変更していることになる
+    names.delete('Foo')
+    names
+  end
+end
+
+Product.names_without_foo
+
+# 定数の中身が変わってしまった！
+Product::SOME_NAMES
+
+class Product
+  SOME_NAMES = ['Foo', 'Bar', 'Baz'].freeze
+
+  def self.names_without_foo(names = SOME_NAMES)
+    # freezeしている配列に対しては破壊的な変更はできない
+    names.delete('Foo')
+    names
+  end
+end
+
+# エラーが発生するので良きせずに定数の値が変更される事故が防げる
+Product.names_without_foo
+
+class Product
+  # 配列はfreezeされるが中身の文字列はfreezeされない
+  SOME_NAMES = ['Foo', 'Bar', 'Baz'].freeze
+
+  # 1番目の要素を破壊的に大文字に変更する
+  Product::SOME_NAMES[0].upcase!
+  # 1番目の要素が値が変わってしまった！
+end
+
+Product::SOME_NAMES
+
+class Product
+  # 中身の文字列もfreezeする
+  SOME_NAMES = ['Foo'.freeze, 'Bar'.freeze, 'Baz'.freeze].freeze
+end
+# 今度は中身もfreezeしているので破壊的な変更はできない
+Product::SOME_NAMES[0].upcase!
+
+# mapメソッドで各要素をfreezeし、最後にmapメソッドの戻り値の配列をfreezeする
+SOME_NAMES = ['Foo', 'Bar', 'Baz'].map(&:freeze).freeze
+
+class Product
+  # 数値やシンボル、ture/falseはfreeze不要(してもかまわないが、意味がない)
+  SOME_VALUE = 0
+  SOME_TYPE = :foo
+  SOME_FLAG = true
+end
