@@ -807,3 +807,30 @@ end
 # 未定義のクラス変数を参照したのでエラーが発生する
 Product.name
 
+# グローバル変数の宣言と値の代入
+$program_name = 'Awesome program'
+
+# グローバル変数に依存するクラス
+class Program
+  def initialize(name)
+    $program_name = name
+  end
+
+  def self.name
+    $program_name
+  end
+
+  def name
+    $program_name
+  end
+end
+
+# $program_nameにはすでに名前が代入されている
+Program.name
+
+program = Program.new('Super program')
+program.name
+
+# Program.newのタイミングで$program_nameが"Super program”に変更される
+Program.name
+$program_name
