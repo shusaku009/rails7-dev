@@ -746,3 +746,64 @@ class Product
   SOME_TYPE = :foo
   SOME_FLAG = true
 end
+
+class Product
+  @@name = 'Product'
+
+  def self.name
+    @@name
+  end
+
+  def initialize(name)
+    @@name = name
+  end
+
+  def name
+    @@name
+  end
+end
+
+class DVD < Product
+  @@name = 'DVD'
+
+  def self.name
+    @@name
+  end
+
+  def upcase_name
+    @@name.upcase
+  end
+end
+
+# DVDクラスを定義したタイミングで@@nameがDVDに変更される
+Product.name
+DVD.name
+
+product = Product.new('A greate movie')
+product.name
+
+# Product.newのタイミングで@@nameが"A greate movie"に変更される
+Product.name
+DVD.name
+
+dvd = DVD.new('An awesome film')
+dvd.name
+dvd.upcase_name
+
+# DVD.newのタイミングで@@nameが"An awesome film"に変更される
+product.name
+Product.name
+DVD.name
+
+class Product
+  # クラス変数@@nameの定義を削除する
+  # @@name = 'Product'
+
+  def self.name
+    @@name
+  end
+end
+
+# 未定義のクラス変数を参照したのでエラーが発生する
+Product.name
+
