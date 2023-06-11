@@ -1204,3 +1204,144 @@ program.name
 Program.name
 $program_name
 
+class User
+  def hello
+    'Hello!'
+  end
+
+  # helloメソッドのエイリアスメソッドとしてgreetを定義する
+  alias greet hello
+end
+
+user = User.new
+user.hello
+user.greet
+
+class User
+  class BloodType
+    attr_reader :type
+
+    def initialize(type)
+      @type = type
+    end
+  end
+end
+
+blood_type = User::BloodType.new('B')
+blood_type.type
+
+class User
+  # =で終わるメソッドを定義する
+  def name=(value)
+    @name = value
+  end
+end
+
+user = User.new
+# 変数に代入するような形式でname=メソッドを呼び出せる
+user.name = 'Alice'
+
+class Product
+  attr_reader :code, :name
+
+
+  def initialize(code, name)
+    @code = code
+    @name = name
+  end
+end
+
+# aとcが同じ商品コード
+a = Product.new('A-0001', 'A great movie')
+b = Product.new('B-0001', 'An awesome film')
+c = Product.new('A-0001', 'A greate movie')
+
+class Product
+  attr_reader :code, :name
+
+
+  def initialize(code, name)
+    @code = code
+    @name = name
+  end
+
+  def ==(other)
+    # otherがProductかつ、商品コードが一致していれば同じProductとみなす
+    other.is_a?(Product) && code == other.code
+  end
+end
+
+# aとcが同じ商品コード
+a = Product.new('A-0001', 'A great movie')
+b = Product.new('B-0001', 'An awesome film')
+c = Product.new('A-0001', 'A greate movie')
+
+a = 'abc'
+b = 'abc'
+a.equal?(b)
+
+c = a
+a.equal?(c)
+
+# eql?メソッドで数値を比較すると、1と1.0は異なる値と判定される
+1.eql?(1.0)
+
+# eql?メソッドで数値を比較する場合は同じクラス(Integer同士、またはFloat同士)でなければtrueにならない
+1.eql?(1)
+1.0.eql?(1.0)
+
+# 文字列(Stringオブジェクト)が返すハッシュ値の例
+# プログラムを再起動しない限り、同じ文字列からは同じハッシュ値が返る
+'JP'.hash #=> -902627378679775197
+'US'.hash #=> 4062498145882064624
+
+class CountryCode
+  attr_reader :code
+
+  def initialize(code)
+    @code = code
+  end
+end
+
+japan = CountryCode.new('JP')
+us = CountryCode.new('US')
+india = CountryCode.new('IND')
+
+# CountryCodeクラスのインスタンスをキーにしてハッシュを作成する
+currencies = { japan => 'yen', us => 'dollar', india => 'rupee' }
+
+# 同じ国コードなら同じキーとしたいが、そのままでは同一インスタンスだけが同じキーとみなされる
+key = CountryCode.new('JP')
+currencies[key]
+currencies[japan]
+
+class CountryCode
+  attr_reader :code
+
+  def initialize(code)
+    @code = code
+  end
+
+  def eql?(other)
+    # otherがCountryCodeかつ、同じ国コードなら同じキーと見なす
+    other.instance_of?(CountryCode) && eql?(other.code)
+  end
+
+  def hash
+    # CountryCodeオブジェクトのハッシュ値として国コードのハッシュ値を返す
+    code.hash
+  end
+end
+
+japan = CountryCode.new('JP')
+us = CountryCode.new('US')
+india = CountryCode.new('IND')
+
+# ハッシュを作り直す
+currencies = { japan => 'yen', us => 'dollar', india => 'rupee' }
+
+# 同じ国コードなら同じキーとしたいが、そのままでは同一インスタンスだけが同じキーとみなされる
+key = CountryCode.new('JP')
+currencies[key]
+currencies[japan]
+
