@@ -1582,3 +1582,13 @@ product.display_text
 dvd = DVD.new('An awesome film', 3000)
 # サブクラスはstock?メソッドを持つのでエラーにならない
 dvd.display_text
+
+def display_name(object)
+  if object.respond_to?(:name)
+    # nameメソッドで呼び出せる場合
+    puts "Name is <<#{object.name}>>"
+  else
+    # nameメソッドが呼び出せない場合
+    puts 'No name.'
+  end
+end
