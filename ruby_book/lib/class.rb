@@ -1345,3 +1345,79 @@ key = CountryCode.new('JP')
 currencies[key]
 currencies[japan]
 
+text = '03-1234-5678'
+
+case text
+when /^\d(3)\d(4)$/
+  puts '郵便番号です'
+when /^\d(4)\d\/d(1,2)\/\d(1,2)$/
+  puts '日付です'
+when /^\d+-\d+-\d+$/
+  puts '電話番号です'
+end
+
+value = [1, 2, 3]
+
+# 内部的にはString === value, Array === value, Hash === valueの結果が評価されている
+case value
+when String
+  puts '文字列です'
+when Array
+  puts '配列です'
+when Hash
+  puts 'ハッシュです'
+end
+
+# Stringクラスを継承した独自クラスを定義する
+class Mystring < String
+  # stringクラスを拡張するためのコードを書く
+end
+s = Mystring.new('Hello')
+s
+s.class
+
+# Arrayクラスを継承した独自クラスを定義する
+class MyArray < Array
+  # Arrayクラスを拡張するためのコードを書く
+end
+a = MyArray.new()
+a << 1
+a << 2
+a
+a.class
+
+class String
+  # 文字列をランダムにシャッフルする
+  def shuffle
+    chars.shuffle.join
+  end
+end
+
+s = 'Hello, I am Alice'
+s.shuffle
+s.shuffle
+
+# 以下のUserクラスは外部ライブラリで定義されている想定
+class User
+  def initialize(name)
+    @name = name
+  end
+
+  def hello
+    "Hello,#{@name}"
+  end
+end
+
+# モンキーパッチをあてる前の挙動を確認する
+user = User.new('Alice')
+user.hello
+
+# helloメソッドにモンキーパッチをあてて独自の挙動をもたせる
+class User
+  def hello
+    "#{@name}さん、こんにちは！"
+  end
+end
+
+# メソッドの定義を上書きしたのでhelloメソッドの挙動が変わっている
+user.hello
