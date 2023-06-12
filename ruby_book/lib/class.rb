@@ -1421,3 +1421,164 @@ end
 
 # メソッドの定義を上書きしたのでhelloメソッドの挙動が変わっている
 user.hello
+
+alice = 'I am Alice'
+bob = 'I am Bob'
+
+# aliceのオブジェクトにだけ、shuffleメソッドを定義する
+def alice.shuffle
+  chars.shuffle.join
+end
+# aliceはshuffleメソッドを持つが、bobは持たない
+alice.shuffle
+bob.shuffle
+
+n = 1
+def n.foo
+  'foo'
+end
+
+sym = :alice
+def sym.bar
+  'bar'
+end
+
+alice = 'I am Alice'
+# aliceというオブジェクトに特異メソッドを追加するもうひとつの方法
+class << alice
+  def shuffle
+    chars.shuffle.join
+  end
+end
+alice.shuffle
+
+# クラスメソッドを定義するコード例
+class User
+  def self.hello
+    'Hello.'
+  end
+
+  class << self
+    def hi
+      'Hi.'
+    end
+  end
+end
+
+# 特異メソッドを定義するコード例
+alice = 'I am alice'
+
+def alice.hello
+  'Hello.'
+end
+
+class << alice
+  def hi
+    'Hi.'
+  end
+end
+
+class User
+
+end
+
+# クラス構文の外部でクラスメソッドを定義する方法1
+def User.hello
+  'Hello.'
+end
+
+# クラス構文の外部で暮らすメソッドを定義する方法2
+class << User
+  def hi
+    'Hi.'
+  end
+end
+
+User.hello
+User.hi
+
+def display_name(object)
+  puts "Name is << #{object.name}"
+end
+
+class User
+  def name
+    'Alice'
+  end
+end
+
+class Product
+  def name
+    'A greate movie'
+  end
+end
+
+# UserクラスとProductクラスはお互いに無関係なクラスだが、display_nameメソッドは何も気にしない
+user = User.new
+display_name(user)
+
+product = Product.new
+display_name(product)
+
+class Product
+  def initialize(name, price)
+    @name = name
+    @price = price
+  end
+  
+  def display_text
+    # stock?メソッドはサブクラスで必ず実装してもらう想定
+    stock = stock? ? 'あり' : 'なし'
+    "商品名: #{@name} 価格: #{@price}円 在庫: #{stock}"
+  end
+end
+
+class DVD < Product
+  # 在庫があればtrueを返す
+  def stock?
+    # (本当はデータベースに問い合わせるなどの処理が必要だがここでは省略)
+    true
+  end
+end
+
+product = Product.new('A greate film', 1000)
+# スーパークラスはstock?メソッドを持たないのでエラーが起きる
+product.display_text
+
+dvd = DVD.new('An awesome film', 3000)
+# サブクラスはstock?メソッドを持つのでエラーにならない
+dvd.display_text
+
+class Product
+  def initialize(name, price)
+    @name = name
+    @price = price
+  end
+  
+  def display_text
+    # stock?メソッドはサブクラスで必ず実装してもらう想定
+    stock = stock? ? 'あり' : 'なし'
+    "商品名: #{@name} 価格: #{@price}円 在庫: #{stock}"
+  end
+
+  def stock?
+    # 「サブクラスでstock?メソッドを実装すること」というメッセージとともにエラーを発生させる
+    raise 'must implement stock? in subclass.'
+  end
+end
+
+class DVD < Product
+  # 在庫があればtrueを返す
+  def stock?
+    # (本当はデータベースに問い合わせるなどの処理が必要だがここでは省略)
+    true
+  end
+end
+
+product = Product.new('A greate film', 1000)
+# スーパークラスはstock?メソッドを持たないのでエラーが起きる
+product.display_text
+
+dvd = DVD.new('An awesome film', 3000)
+# サブクラスはstock?メソッドを持つのでエラーにならない
+dvd.display_text
