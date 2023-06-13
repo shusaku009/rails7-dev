@@ -254,3 +254,40 @@ t_120 == t_180
 tempos = [Tempo.new(180), Tempo.new(60), Tempo.new(120)]
 # sortメソッドの内部では並び替えの際に<=>演算子が使われる
 tempos.sort
+
+p self
+p self.class
+
+class User
+  # ここはクラスの内部
+  p self
+  p self.class
+end
+
+class User
+end
+
+# Userクラス自身のクラスはclass
+User.class
+
+# ClassクラスのスーパークラスはModuleクラス
+Class.superclass
+
+module Loggable
+end
+
+# Loggableモジュール自身のクラスはModuleクラス
+Loggable.class
+
+# ModuleクラスのスーパークラスはObjectクラス
+Module.superclass
+
+class User
+  p self
+  p self.class
+end
+
+module Loggable
+  p self
+  p self.class
+end
