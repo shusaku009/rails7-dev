@@ -291,3 +291,101 @@ module Loggable
   p self
   p self.class
 end
+
+module NameChangeable
+  def change_name
+    # include先のクラスのインスタンス変数を変更する
+    @name = 'ありす'
+  end
+end
+
+class User
+  include NameChangeable
+
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
+end
+
+user = User.new
+user.name
+
+# モジュールで定義したメソッドでインスタンス変数を書き換える
+user.change_name
+user.name
+
+module NameChangeable
+  def change_name
+    # セッターメソッド経由でデータを変更する
+    # (ミックスイン先のクラスでsetterメソッドが未定義であれば、エラーが発生して実装上の問題に気づける)
+    self.name = 'ありす'
+  end
+end
+
+class User
+  include NameChangeable
+
+  # ゲッターメソッドとセッターメソッドを用意する
+  attr_accessor :name
+
+  def initialize(name)
+    @name = name
+  end
+end
+
+# Userクラスの使い方は先程と同じ
+user = User.new('alice')
+user.change_name
+user.name
+
+module Loggable
+  def log(text)
+    puts "[LOG]#{text}"
+  end
+end
+
+s = 'abc'
+
+# 文字列は通常logメソッドを持たない
+s.log('Hello.')
+
+# 文字列sにLoggableモジュールをextendして、特異メソッドを定義する
+s.extend Loggable
+
+# Loggableモジュールlogメソッドが呼び出せるようになる
+s.log('Hello.')
+
+self.class
+
+# トップレベルにメソッドを定義すると、どのクラスに定義されたことになる？
+def greet
+  'Hi!'
+end
+# =>正解は「Objectクラス」
+
+class Object
+  private
+
+  def greet
+    'Hi!'
+  end
+end
+
+# private_instance_methodsはそのクラスで定義されているprivateメソッド名の一覧を配列で返す
+# また、grepメソッドは引数にマッチした要素を配列で返す
+Object.private_instance_methods.grep(:greet)
+
+def greet
+  'Hi!'
+end
+
+class Foo
+  def bar
+    # トップレベルで定義したメソッドを呼び出す
+    greet
+  end
+end
+
+Foo.new.bar
