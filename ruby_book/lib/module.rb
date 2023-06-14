@@ -686,3 +686,65 @@ AwesomeApi.debug_mode = true
 # 設定値を参照する
 AwesomeApi.base_url
 AwesomeApi.debug_mode
+
+module A
+  def to_s
+    "<A>#{super}"
+  end
+end
+
+module B
+  def to_s
+    "<B>#{super}"
+  end
+end
+
+class Product
+  def to_s
+    "<Product>#{super}"
+  end
+end
+
+class DVD < Product
+  include A
+  include B
+
+  def to_s
+    "<DVD>#{super}"
+  end
+end
+
+dvd = DVD.new
+dvd.to_s
+DVD.ancestors #=> [DVD, B, A, Product, Object, PP::ObjectMixin, Kernel, BasicObject]
+
+module Greetable
+  def hello
+    'hello.'
+  end
+end
+
+module Aisatsu
+  # 別のモジュールをincludeする
+  include Greetable
+
+  def konnichiwa
+    'こんにちは。'
+  end
+end
+
+class User
+  # Aisatsuモジュールだけをincludeする
+  include Aisatsu
+end
+
+user = User.new
+
+# Aisatsuモジュールを呼び出す
+user.konnichiwa
+
+# Greetableモジュールのメソッドを呼び出す
+user.hello
+
+User.ancestors #=> [User, Aisatsu, Greetable, Object, PP::ObjectMixin, Kernel, BasicObject]
+
