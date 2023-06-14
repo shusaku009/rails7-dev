@@ -389,3 +389,263 @@ class Foo
 end
 
 Foo.new.bar
+
+class Second
+  def initialize(player, uniform_number)
+    @player = player
+    @uniform_number = uniform_number
+  end
+end
+
+class Second
+  def initialize(digits)
+    @digits = digits
+  end
+end
+
+# 二塁手のAliceを作成したい(が、区別できない)
+Second.new('Alice', 13)
+
+# 時計の13秒を作成したい(が、区別できない)
+Second.new(13)
+
+module Baseball
+  # これはBaseballモジュールに属するSecondクラス
+  class Second
+    def initialize(player, uniform_number)
+      @player = player
+      @uniform_number = uniform_number
+    end
+  end
+end
+
+module Clock
+  # これはClockモジュールに属するSecondクラス
+  class Second
+    def initialize(digits)
+      @digits = digits
+    end
+  end
+end
+
+# 二塁手のAliceを作成する(ちゃんと区別できる)
+Baseball::Second.new('ALice', 13)
+
+# 時計の13秒を作成する(ちゃんと区別できる)
+Clock::Second.new(13)
+
+# すでにBaseballモジュールが定義されている
+module Baseball
+
+end
+
+# モジュール名::クラス名の形でクラスを定義する
+class Baseball::Second
+  def initialize(player, uniform_number)
+    @player = player
+    @uniform_number = uniform_number
+  end
+end
+
+# トップレベルのSecondクラス
+class Second
+  def initialize(player, uniform_number)
+    @player = player
+    @uniform_number = uniform_number
+  end
+end
+
+module Clock
+  # ClockモジュールのSecondクラス
+  class Second
+    def initialize(digits)
+      @digits = digits
+    end
+  end
+end
+
+module Clock
+  class Second
+    def initialize(digits)
+      @digits = digits
+      # トップレベルのSecondクラスをnewしたい
+      @baseball_second = Second.new('Alice', 13)
+    end
+  end
+end
+
+# initializeメソッド内のSecond.newの呼び出しに失敗する
+Clock::Second.new(13)
+
+class Second
+  def initialize(player, uniform_number)
+    @player = player
+    @uniform_number = uniform_number
+  end
+end
+
+module Clock
+  class Second
+    def initialize(digits)
+      @digits = digits
+      # クラス名の前に::を付けるとトップレベルのクラスを指定したことになる
+      @baseball_second = ::Second.new('Alice', 13)
+    end
+  end
+end
+
+# initializeメソッドの中でトップレベルのクラスを参照できたのでエラーにならない
+Clock::Second.new(13)
+
+# モジュール構文とクラス構文を入れ子にして書く場合
+module Baseball
+  class Second
+    # 省略
+  end
+end
+
+# ::を使ってフラットに書く場合(入れ子なし)
+class Baseball::Second
+  # 省略
+end
+
+module Baseball
+  # スコアを記録するためのFileクラスを定義する
+  class File
+    # 省略
+  end
+end
+
+module Baseball
+  class Second
+    def file_with_nesting
+      # 入れ子ありのクラス定義でFileクラスを参照する
+      puts File
+    end
+  end
+end
+
+class Baseball::Second
+  def file_without_nesting
+    # 入れ子なしのクラス定義でFileクラスを参照する
+    puts File
+  end
+end
+
+second = Baseball::Second.new
+second.file_with_nesting
+second.file_without_nesting
+
+class Baseball::Second
+  def file_with_nesting
+    # 入れ子なしのクラス定義では明示的に名前空間を付ける必要がある
+    puts Baseball::File
+  end
+end
+
+second = Baseball::Second.new
+second.file_without_nesting
+
+module Baseball
+  class Second
+    def file_with_nesting
+      # 入れ子ありのクラス定義で組み込みライブラリのFileクラスを参照する
+      puts ::File
+    end
+  end
+end
+
+second = Baseball::Second.new
+second.file_with_nesting
+
+module Loggable
+  # 特異メソッドとしてメソッドを定義する
+  def self.log(text)
+    puts "[LOG]#{text}"
+  end
+end
+
+# 他のクラスにミックスインしなくてもモジュール単体でそのメソッドを呼び出せる
+Loggable.log('Hello.')
+
+module Loggable
+  class << self
+    def log(text)
+      puts "[LOG]#{text}"
+    end
+
+    # 以下、他の特異メソッドを定義
+  end
+end
+
+Loggable.log('Hello.')
+
+module Loggable
+  def log(text)
+    puts "[LOG]#{text}"
+  end
+  # logメソッドをミックスインとしても、モジュールの特異メソッドとしても使えるようにする
+  # (module_functionは対象メソッドの定義よりも下で呼び出すこと)
+  module_function :log
+end
+
+# モジュールの特異メソッドとしてlogメソッドを呼び出す
+Loggable.log('Hello.')
+
+# Loggableモジュールをincludeしたクラスを定義する
+class Product
+  include Loggable
+
+  def title
+    # includeしたLoggableモジュールのlogメソッドを呼び出す
+    log 'title is called.'
+    'A greate movie'
+  end
+end
+
+# ミックスインとしてlogメソッドを呼び出す
+product = Product.new
+product.title
+
+product = Product.new
+# logメソッドはprivateなので外部からは呼び出せない
+product.log 'Hello.'
+
+module Loggable
+  # ここから下のメソッドはすべてモジュール関数
+  module_function
+
+  def log(text)
+    puts "[LOG]#{text}"
+  end
+end
+
+module Loggable
+  # 定数を定義する
+  PREFIX = '[LOG]'
+
+  def log(text)
+    puts "#{PREFIX}#{text}"
+  end
+end
+
+# 定数を参照する
+Loggable::PREFIX
+
+# モジュールの特異メソッドとしてsqrt(平方根)メソッドを利用する
+Math.sqrt(2)
+
+class Calculator
+  include Math
+
+  def calc_sqrt(n)
+    # ミックスインとしてMathモジュールのsqrtメソッドを使う
+    sqrt(n)
+  end
+end
+
+calculator = Calculator.new
+calculator.calc_sqrt(2)
+
+Math::E
+Math::PI
