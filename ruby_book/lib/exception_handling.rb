@@ -320,3 +320,89 @@ File.open('some.txt', 'w') do |file|
   1 / 0
 end
 # 例外は発生するものの、openメソッドによってクローズ処理自体は必ず行われる
+
+# else節を使う場合
+begin
+  puts 'Hello.'
+rescue
+  puts '例外が発生しました'
+else
+  puts '例外は発生しませんでした'
+end
+# =>Hello.
+# 例外が発生しませんでした
+
+# else節を使わない場合
+begin
+  puts 'Hello.'
+  puts '例外は発生しませんでした'
+rescue
+  puts '例外が発生しました'
+end
+
+# 正常に終了した場合
+ret =
+  begin
+    'OK'
+  rescue
+    'error'
+  ensure
+    'ensure'
+  end
+ret
+
+# 例外が発生した場合
+ret =
+  begin
+    1 / 0
+    'OK'
+  rescue
+    'error'
+  ensure
+    'ensure'
+  end
+ret
+
+def some_methods(n)
+  begin
+    1 / n
+    'OK'
+  rescue
+    'error'
+  ensure
+    'ensure'
+  end
+end
+
+some_methods(1)
+some_methods(0)
+
+def some_methods(n)
+  begin
+    1 / 0
+    'OK'
+  rescue
+    'error'
+  ensure
+    # ensure節にreturnを書く
+    return 'ensure'
+  end
+end
+
+some_methods(1)
+some_methods(0)
+
+def some_methods(n)
+  begin
+    1 / n
+    'OK'
+  ensure
+    # rescue節なしでensure節にreturnを書く(良くない例)
+    return 'ensure'
+  end
+end
+
+some_methods(1)
+
+# ZeroDivisionErrorが発生して異常終了しそうだが、正常終了してしまう
+some_methods(0)
