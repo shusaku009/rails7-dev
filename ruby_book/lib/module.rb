@@ -748,3 +748,146 @@ user.hello
 
 User.ancestors #=> [User, Aisatsu, Greetable, Object, PP::ObjectMixin, Kernel, BasicObject]
 
+module A
+  def to_s
+    "<A>#{super}"
+  end
+end
+
+class Product
+  # includeではなくprependを使う
+  prepend A
+
+  def to_s
+    "<Product>#{super}"
+  end
+end
+
+product = Product.new
+product.to_s
+
+Product.ancestors
+
+Product.ancestors
+
+# このクラスは外部ライブラリで定義されている想定
+class Product
+  def name
+    'A great film'
+  end
+end
+
+# prependするためのモジュールを定義する
+module NameDecorator
+  def name
+    # prependするとsuperはミックスインした先のクラスのnameメソッドが呼び出される
+    "<<#{super}>>"
+  end
+end
+
+class Product
+  #includeではなくprependでミックスインする
+  prepend NameDecorator
+end
+
+product = Product.new
+product.name
+
+# Productクラスと同じようにnameメソッドを持つクラスがあったとする
+class User
+  def name
+    'Alice'
+  end
+end
+
+class User
+  # prependを使えばUserクラスのnameメソッドも置き換えることができる
+  prepend NameDecorator
+end
+
+# Userクラスのnameメソッドを上書きすることができた！
+user = User.new
+user.name
+
+# クラス名.prepend モジュール名の形式でprependできる
+Product.prepend NameDecorator
+User.prepend NameDecorator
+
+module StringShuffle
+  # refinementsが目的なので、refineメソッドを使う
+  refine String do
+    def shuffle
+      chars.shuffle.join
+    end
+  end
+end
+
+# 通常はStringクラスにshuffleメソッドはない
+'Alice'.shuffle
+
+class User
+  # refinementsを有効化する
+  using StringShuffle
+
+  def initialize(name)
+    @name = name
+  end
+
+  def shuffled_name
+    # Userクラスの内部であればStringクラスのshuffleメソッドが有効になる
+    @name.shuffle
+  end
+
+  # Userクラスを抜けるとrefinementsは無効になる
+end
+
+user = User.new('Alice')
+# Userクラス内ではshuffleメソッドが有効になっている
+user.shuffled_name
+
+# Userクラスを経由しない場合はshuffleメソッドは使えない
+'Alice'.shuffle
+
+# StringShuffleモジュールを読み込む
+require_relative 'string_shuffle'
+
+# ここではまだshuffleメソッドが使えない
+# puts 'Alice.shuffle
+
+# トップレベルでusingすると、ここからファイルの最後までshuffleメソッドが有効になる
+using Stringshuffle
+
+puts 'Alice'.shuffle
+
+class User
+  def initialize(name)
+    @name = name
+  end
+
+  def shuffled_name
+    @name.shuffle
+  end
+end
+
+user = User.new('Alice')
+puts user.shuffled_name
+
+puts 'Alice'.shuffle
+
+# ほかのファイルではshuffleメソッドは使えない
+
+module Sample
+  class User
+    NAME = 'Alice'
+
+    def self.hello(name = NAME)
+      "Hello, I am #{name}. "
+    end
+  end
+end
+
+Sample::User::NAME
+
+Sample::User.hello
+
+Sample::User::hello
