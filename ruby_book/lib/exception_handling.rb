@@ -138,3 +138,162 @@ rescue NameError
 rescue # 例外クラスをしていしない
   puts 'その他のエラーです'
 end
+
+retry_count = 0
+begin
+  puts '処理を開始します。'
+  # わざと例外を発生させる
+  1 / 0
+rescue
+  retry_count += 1
+  if retry_count <= 3
+    puts "retryします。(#{retry_count}回目)"
+    retry
+  else
+    puts 'retryに失敗しました。'
+  end
+end
+
+def currency_or(country)
+  case country
+  when :japan
+    'yen'
+  when :us
+    'dollar'
+  when :india
+    'rupee'
+  else
+    # 意図的に例外を発生させる
+    raise "無効な国名です。#{country}"
+  end
+end
+
+currency_or(:japan)
+currency_or(:italy)
+
+def currency_or(country)
+  case country
+  when :japan
+    'yen'
+  when :us
+    'dollar'
+  when :india
+    'rupee'
+  else
+    # エラーメッセージなしで例外を発生させる(あまり良くない)
+    raise
+  end
+end
+
+currency_or(:italy)
+
+def currency_or(country)
+  case country
+  when :japan
+    'yen'
+  when :us
+    'dollar'
+  when :india
+    'rupee'
+  else
+    # RuntimeErrorではなく、ArgumentErrorを発生させる
+    raise ArgumentError, "無効な国名です。#{country}"
+  end
+end
+
+currency_or(:italy)
+
+def currency_or(country)
+  case country
+  when :japan
+    'yen'
+  when :us
+    'dollar'
+  when :india
+    'rupee'
+  else
+    # RuntimeErrorではなく、ArgumentErrorを発生させる
+    raise ArgumentError.new("無効な国名です。#{country}")
+  end
+end
+
+currency_or(:italy)
+
+# エラーメッセージを省略して例外を発生させる(あまり良くない)
+raise ArgumentError
+raise ArgumentError.new
+
+# 大量のユーザにメールを送信する(例外が起きても最後まで続行する)
+users.each do |user|
+  begin
+    # メール送信を実行する
+    send_mail_to(user)
+  rescue => e
+    # full_messageメソッドを使って例外のクラス名、エラーメッセージ、バックトレースをターミナルに出力
+    # (ログファイルがあればそこに出力するほうがベター)
+    puts e.full_message
+  end
+end
+
+require 'date'
+
+def convert_reiwa_to_date(reiwa_text)
+  m = reiwa_text.match(/令和(?<jp_year>\d+)年(?<month>\d+)月(?<day>\d+)日/)
+  year = m[:jp_year].to_i + 2018
+  month = m[:month].to_i
+  day = m[:day].to_i
+  # 正しい日付の場合のみ、Dateオブジェクトを作成する
+  if Date.valid_date?(year, month, day)
+    Date.new(year, month, day)
+  end
+end
+
+convert_reiwa_to_date('令和3年12月31日')
+convert_reiwa_to_date('令和3年99月99日')
+
+# elseを用意しないパターン(良くない例)
+def currency_of(country)
+  case country
+  when :japan
+    'yen'
+  when :us
+    'dollar'
+  when :india
+    'rupee'
+  end
+end
+# 想定外の国名を渡すとnilが返る
+currency_of(:italy)
+currency = currency_of(:italy)
+# 戻り値が常にStringオブジェクトだと思いこんでしまい、upcaseメソッドを呼び出してしまった
+currency.upcase
+
+# elseを:indiaとして扱うパターン(良くない例)
+def currency_of(country)
+  case country
+  when :japan
+    'yen'
+  when :us
+    'dollar'
+  else
+    'rupee'
+  end
+end
+# 矛盾した値が返ってきてしまう
+currency_of(:italy)
+
+# elseに入ったら例外を発生させるパターン(いい例)
+def currency_of(country)
+  case country
+  when :japan
+    'yen'
+  when :us
+    'dollar'
+  when :india
+    'rupee'
+  else
+    raise ArgumentError, "無効な国名です。#{country}"
+  end
+end
+# 例外が発生する
+currency_of(:italy)
