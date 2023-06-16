@@ -406,3 +406,55 @@ some_methods(1)
 
 # ZeroDivisionErrorが発生して異常終了しそうだが、正常終了してしまう
 some_methods(0)
+
+# 例外が発生しない場合
+1 / 1 rescue 0
+
+# 例外が発生する場合
+1 / 0 rescue 0
+
+require 'date'
+
+def to_date(string)
+  begin
+    # 文字列のパースを試みる
+    Date.parse(string)
+  rescue ArgumentError
+    # パースできない場合はnilを返す
+    nil
+  end
+end
+
+# パース可能な文字列を渡す
+to_date('2021-01-01')
+
+# パース不可能な文字列を渡す
+to_date('abcdef')
+
+def to_date(string)
+  Date.parse(string) rescue nil
+end
+
+to_date('2021-01-01')
+to_date('abcdef')
+
+# rescue節で例外処理を変数eに格納する
+begin
+  1 / 0
+rescue => e
+  puts "#{e.class}#{e.message}"
+  puts e.backtrace
+end
+# => ZeroDivisionError divided by 0
+# (バックトレースは省略)
+
+# 組み込み変数と$!と$@に格納された例外情報を使う
+begin
+  1 / 0
+rescue
+  puts "#{$!.class}#{$!.message}"
+  puts $@
+end
+# => ZeroDivisionError divided by 0
+# (バックトレースは省略)
+
