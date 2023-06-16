@@ -458,3 +458,139 @@ end
 # => ZeroDivisionError divided by 0
 # (バックトレースは省略)
 
+def fizz_buzz(n)
+  begin
+    if n % 15 == 0
+      'Fizz Buzz'
+    elsif n % 3 == 0
+      'Fizz'
+    elsif n % 5 == 0
+      'Buzz'
+    else
+      n.to_s
+    end
+  rescue => e
+    puts "#{e.class}#{e.message}"
+  end
+end
+
+fizz_buzz(nil)
+
+def fizz_buzz(n)
+    if n % 15 == 0
+      'Fizz Buzz'
+    elsif n % 3 == 0
+      'Fizz'
+    elsif n % 5 == 0
+      'Buzz'
+    else
+      n.to_s
+    end
+  rescue => e
+    puts "#{e.class}#{e.message}"
+end
+
+fizz_buzz(nil)
+
+# 元のコード(begin/endを省略しない)
+users.each do |user|
+  begin
+    send_mail_to(user)
+  rescue => e
+    puts e.full_message
+  end
+end
+
+# begin/endを省略したコード
+users.each do |user|
+  send_mail_to(user)
+rescue => e
+  puts e.full_message
+end
+
+# ブロックを{}で書いた場合は例外処理のbeginとendを省略できない(構文エラーになる)
+users.each { |user|
+  send_mail_to(user)
+rescue => e
+  puts e.full_message
+}
+
+# この場合はbeginとendを省略せずに書く必要がある
+users.each { |user| 
+  begin
+    send_mail_to(user)
+  rescue => e
+    puts e.full_message
+  end
+}
+
+def fizz_buzz(n)
+  if n % 15 == 0
+    'FizzBuzz'
+  elsif n % 3 == 0
+    'Fizz'
+  elsif n % 5 == 0
+    'Buzz'
+  else
+    n.to_s
+  end
+rescue => e
+  # 発生した例外をログやメールに残す(ここはputsで代用)
+  puts "[LOG]エラーが発生しました: #{e.class}#{e.message}"
+  # 捕捉した例外を再度発生させ、プログラム自体は異常終了させる
+  raise
+end
+
+fizz_buzz(nil)
+
+class NoCountryError < StandardError
+  # 独自のクラス名を与えるのが目的なので、実装コードはとくに書かない(継承だけで済ませる)
+end
+
+def currency_of(country)
+  case country
+  when :japan
+    'yen'
+  when :us
+    'dollar'
+  when :india
+    'rupee'
+  else
+    # 独自に定義したNoCountryErrorを発生させる
+    raise NoCountryError, "無効な国名です。#{country}"
+  end
+end
+
+currency_of(:italy)
+
+class NoCountryError < StandardError
+  # 国名を属性として取得できるようにする
+  attr_reader :country
+
+  def initialize(message, country)
+    @country = country
+    super("#{message}#{country}")
+  end
+end
+
+def currency_of(country)
+  case country
+  when :japan
+    'yen'
+  when :us
+    'dollar'
+  when :india
+    'rupee'
+  else
+    # NoCountryErrorを発生させる
+    raise NoCountryError.new('無効な国名です。', country)
+  end
+end
+
+begin
+  currency_of(:italy)
+rescue NoCountryError => e
+  # エラーメッセージと国名を出力する
+  puts e.message
+  puts e.country
+end
