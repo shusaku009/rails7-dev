@@ -8,4 +8,11 @@ class WordSynth
   end
 
   def play(original_words)
+    words = original_words
+    @effects.each do |effect|
+      # 効果を適用する
+      words = effect.call(words)
+    end
+    words
+  end
 end
