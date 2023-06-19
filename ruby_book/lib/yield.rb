@@ -348,3 +348,49 @@ judge(25)
 
 reverse_proc = Proc.new { |s|}
 
+reverse_proc = Proc.new { |s| s.reverse }
+# mapメソッドにブロックを渡す代わりに、Procオブジェクトを渡す(ただし&が必要)
+['Ruby', 'Java', 'Python'].map(&reverse_proc)
+
+reverse_proc = Proc.new { |s| s.reverse }
+other_proc = reverse_proc.to_proc
+# Procオブジェクトに対してto_procメソッドを呼んでも自分自身が返るだけ
+reverse_proc.equal?(other_proc)
+
+spilit_proc = :split.to_proc
+split_proc
+
+# 引数が一つの場合は、'a-b-c-d e'.splitと同じ(ホワイトスペースで分割する)
+split_proc.call('a-b-c-d e')
+
+# 引数が2つの場合は'a-b-c-d e'.splitと同じ(指定された文字で分割する)
+split_proc.call('a-b-c-d e', '-')
+
+# 引数が3つの場合は'a-b-c-d e'.aplit('-', 3)と同じ(分割する個数を制限する)
+split_proc.call('a-b-c-d e', '-',3)
+
+['ruby', 'java', 'python'].map { |s| s.upcase }
+['ruby', 'java', 'python'].map(&:upcase)
+
+def generate_proc(array)
+  counter = 0
+  # Procオブジェクトをメソッドの戻り値とする
+  Proc.new do
+    # ローカル変数のcounterを加算する
+    counter += 10
+    # メソッド引数のarrayにcounterの値を追加する
+    array << counter
+  end
+end
+
+values = []
+sample_proc = generate_proc(values)
+values
+
+# Procオブジェクトを実行するとgenerate_procメソッドの引数だったvaluesの中身が書き換えられる
+sample_proc.call
+values
+
+# generate_procメソッド内のローカル変数counterも加算され続ける
+sample_proc.call
+values
