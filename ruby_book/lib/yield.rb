@@ -394,3 +394,25 @@ values
 # generate_procメソッド内のローカル変数counterも加算され続ける
 sample_proc.call
 values
+
+# 処理の開始時と終了時にログを記録する共通メソッド
+# (ここでは実際にログに記録する代わりにputsで代用)
+def with_logging(name)
+  puts "[LOG] START: #{name}"
+  ret = yield
+  puts "[LOG] END: #{name}"
+  ret
+end
+
+# ログ付きで数字の加算を実行する
+answer = with_logging('add numbers') do
+  1 + 2
+end
+answer
+
+# ログ付きでmapメソッドを実行する
+numbers = with_logging('Array#map')do
+  [1, 2, 3].map { |n| n * 10 }
+end
+numbers
+
