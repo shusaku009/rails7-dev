@@ -398,3 +398,150 @@ in [1, *rest]
   "rest = #{rest}"
 end
 
+case [1, 2, 3, 4, 5]
+in [1, *rest]
+  # 最初の要素が1であればマッチ
+  # 2番目以降の要素は任意(0個以上)で、対応する要素が配列として変数restに代入される
+  "rest = #{rest}"
+end
+
+case [1, 2, 3, 4, 5]
+in [1, ]
+  'matched'
+end
+
+# in節の一番外側の[]は省略可能
+case [1, [2, 3]]
+in a, [b, c]
+  "a = #{a}, b = #{b}, c = #{c}"
+end
+
+case {name: 'Alice', age: 20}
+in {name: name, age: age}
+  "name = #{name}, age = #{age}"
+end
+
+case {name: 'Alice', age: 20}
+in {name:, age:}
+  "name = #{name}, age = #{age}"
+end
+
+case {name: 'Alice', age: 20}
+in {age:, name:}
+  # キーの順番が一致しなくてもマッチの結果には影響しない
+  "name = #{name}, aeg = #{age}"
+end
+
+case {name: 'Alice', age: 20, gender: :female}
+in {name: 'Alice', age: 18.., gender:}
+  # :namen値がAlice、:ageの値が18以上かつ、キーに:genderが含まれればマッチ
+  # :genderに対応する値は変数gendernい代入される
+  "gender = #{gender}"
+end
+
+case {name: 'Alice', children: ['Bob']}
+in {name:,children: [child]}
+  # :nameと:childrenのキーを持ち、なおかつ:childrenの値が要素1個の配列であればマッチ
+  "name = #{name}, child = #{child}"
+end
+
+case {name: 'Alice', age: 20, gender: :female}
+in {name: 'Alice', gender:}
+  # in句に:ageを指定していないが、:nameと:genderの条件が部分一致するので全体としてはマッチ
+  "gender = #{gender}"
+end
+
+cars = [
+  {name: 'The Beatle', engine: '105ps'},
+  {name: 'Prius', engine: '98ps', motor: '72ps'},
+  {name: 'Tesla', motor: '306ps'}
+]
+
+cars.each do |car|
+  case car
+  in {name:, engine:}
+    # The BeatleもPriusもどちらもこのパターンにマッチする
+    puts "Gasoline: #{name} / engine: #{engine}"
+  in {name:, motor:}
+    puts "EV: #{name} / motor: #{motor}"
+  in {name:, engine:, motor:}
+    # Priusはガソリン車のパターンに部分一致するので下の処理は絶対に実行されない
+    puts "Hybrid: #{name} / engine: #{engine} / motor: #{motor}"
+  end
+end
+
+case {a: 1}
+in {}
+  #{a: 1}は空のハッシュではないのでここではマッチしない
+  'empty'
+in {a:}
+  "a = #{a}"
+end
+
+case {}
+in {}
+  # 空のハッシュ同士で完全一致するのでここにマッチする
+  'empty'
+in {a:}
+  "a = #{a}"
+end
+
+# in節でkey => value形式を使うと構文エラーになる
+case {name: 'Alice', age: 20}
+in {:name => n, age => a}
+  # 省略
+end
+
+case {name: 'Alice', age: 20, gender: :female}
+in {name: 'Alice', **rest}
+  # :nameがキーで値がAliceならマッチ。それ以外のキーと値は任意で変数restに代入
+  "rest = #{rest}"
+end
+
+# **を最初に使うと構文エラーになる
+case {name: 'Alice', age: 20, gender: :female}
+in {**rest, gender:}
+  # 省略
+end
+
+case {name: 'Alice', age: 20, gender: :female}
+in {name: 'Alice', **}
+  # :nameがキーで値がAliceならマッチ。それ以外のキーと値は任意(変数として使わない)
+  # ただし、in {name: 'Alice'}と書いたときと違いがない
+  'matched'
+end
+
+case {name: 'Alice', age: 20, gender: :female}
+in {name:, **nil}
+  # :name以外のキーがないことがマッチの条件になるので、case節のハッシュはマッチしない
+end
+
+case {name: 'Alice'}
+in {name:, **nil}
+  # :name以外のキーがないので、case節のハッシュはマッチする
+  "name = #{name}"
+end
+
+# in節の一番外側の{}は省略可能
+case {name: 'Alice', age: 20}
+in age:, name:
+  "name = #{name}, age = #{age}"
+end
+
+case {name: 'Alice', age: 20, gender: 'female'}
+in {name: String, age: 18..}
+  # マッチするが、:nameや:ageの値が取得できない!
+end
+
+case {name: 'Alice', age: 20, gender: 'famale'}
+in {name: String => name, age: 18.. => age}
+  # => 変数名の形式でマッチしたオブジェクトを変数に代入できる(asパターン)
+  "name = #{name}, age = #{age}"
+end
+
+case {name: 'Alice', age: 20, gender: :female}
+in {name: String, age: 18..} => person
+  # マッチしたハッシュ全体を変数personに代入できる
+  "person = #{person}"
+end
+
