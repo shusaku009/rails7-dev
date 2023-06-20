@@ -188,3 +188,213 @@ else
   'Unknown'
 end
 
+country = 'india'
+
+# 想定外の条件に備えてelse節で意図的に例外をraiseする
+case country
+when 'japan'
+  'こんにちは'
+when 'us'
+  'Hello'
+when 'italy'
+  'Ciao'
+else
+  raise "無効な国名です。 #"
+end
+
+# パターンマッチでは自動的に例外が発生するのでelse節が不要
+case country
+in 'japan'
+  'こんにちは'
+in 'us'
+  'Hello'
+in 'italy'
+  'Ciao'
+end
+
+country = 'india'
+
+case country
+in 'japan'
+  'こんにちは'
+in 'us'
+  'Hello'
+in 'italy'
+  'Ciao'
+in obj
+  # variableパターンを用いて任意のオブジェクトをマッチさせる(実質的なelse節)
+  "Unknown: #{obj}"
+end
+
+value = 'abc'
+
+case value
+in Integer
+  '整数です'
+in String
+  # String === 'abc'が真なのでここにマッチ
+  '文字列です'
+end
+
+# 文字列もマッチ
+case 'Alice'
+in obj
+  "obj = #{obj}"
+end
+
+# 数値もマッチ
+case 123
+in obj
+  "obj = #{obj}"
+end
+
+# 配列もマッチ
+case [10, 20]
+in obj
+  "obj = #{obj}"
+end
+
+record = [2019, 5]
+
+# パターンにマッチした値(配列の要素)をin句の変数に代入する
+case record
+in [year]
+  "#{year}年です"
+in [year, month]
+  # 要素数が2つなのでここにマッチ
+  "#{year}年#{month}月です"
+in [year, month, day]
+  "#{year}年#{month}月#{day}日です"
+end
+
+alice = 'Alice'
+bob = 'Bob'
+name = 'Bob'
+
+# ピン演算子を使って事前に定義した変数を参照する
+case name
+in ^alice #in 'Alice'と書いたのと同じ
+  'Aliceさん、こんにちは!'
+in ^bob #in 'Bob'と書いたのと同じ(ここにマッチ)
+  'Bobさんこんにちは!'
+end
+
+records = [
+  [7, 7, 7],
+  [6, 7, 5]
+]
+
+records.each do |record|
+  case record
+  in [n, ^n, ^n] # 要素数が3つでなおかつ3つとも同じ値であればマッチ
+    puts "all same: #{record}"
+  else
+    puts "not same: #{record}"
+  end
+end
+
+records = [
+  [Integer, 1, 2],
+  [Integer, 3, 'X']
+]
+
+records.each do |record|
+  case record
+  in [klass, ^klass, ^klass] #最後の2要素が最初の要素のクラスのインスタンスであればマッチ
+    puts "match: #{record}"
+  else
+    puts "not match: #{record}"
+  end
+end
+
+# in節でインスタンス変数を使おうとすると構文エラーになる
+case 1
+in @n
+  "@n = #{@n}"
+end
+
+@n = 1
+# ピン演算子とインスタンス変数を組み合わせると構文エラーになる
+case 1
+in ^@n
+  '1です'
+end
+
+# ピン演算子を使いたい場合はいったんローカル変数に入れ直す必要がある
+n = @n
+case 1
+in ^n
+  '1です'
+end
+
+s = '1'
+
+# ピン演算子とto_iメソッドを組み合わせた場合も構文エラー
+case 1
+in ^s.to_i
+  '1です'
+end
+
+case [1, 2, 3]
+in [a, b, c]
+  # 配列の要素が3つであればマッチし、なおかつ対応する要素が変数a,b,cに代入される
+  "a = #{a}, b = #{b}, c = #{c}"
+end
+
+case [1,[2, 3]]
+in [a, [b,c]]
+  "a = #{a}, b = #{b}, c = #{c}"
+end
+
+case [1, [2, 3]]
+in [a, b]
+  # bには配列[2, 3]が代入される
+  "a = #{a}, b = #{b}"
+end
+
+case [1, 999, 3]
+in [1, n, 3]
+  # 配列の要素数は3、かつ最初と最後の要素がそれぞれ1と3であればマッチ
+  # 2番めの要素は任意で対応する値が変数ｎに代入される
+  "n = #{n}"
+end
+
+case ['Alice', 999, 3]
+in [String, 10..., n]
+  # 配列の要素数は3、かつ最初の要素は文字列(String型)、かつ2番目の要素が10以上であればマッチ
+  # 3番目の要素は任意で対応する値が変数nに代入される
+  "n = #{n}"
+end
+
+# in節に同じ変数名を2回以上使うと構文エラーになる
+case [1, 2, 3]
+in [a, a, 3]
+  # 省略
+end
+
+# 同じ値を同じ変数に代入しようとした場合も同様にエラーになる
+case [1, 2, 3]
+in [a, a, 3]
+  # 省略
+end
+
+case [1, 2, 3]
+in [_, _, 3]
+  # 要素数が3つで最後の要素が3ならマッチ
+  # 最初と2番目の要素は任意(_は変数として使わない)
+  'matched'
+end
+
+# _の代わりに_aを使う(意味は上のコードと同じ)
+case [1, 2, 3]
+in [_a, _a, 3]
+  'matched'
+end
+
+case [1, 2, 3, 4, 5]
+in [1, *rest]
+  # 最初の要素が1であればマッチ
+  # 2番目以降の要素は任意(0個以上)で、対応する要素が配列として変数restに代入される
+  "rest = #{rest}"
+end
+
