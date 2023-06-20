@@ -605,3 +605,72 @@ in [*, n, *]
   # 省略
 end
 
+data = [[1, 2, 3], [5, 4, 6]]
+data.each do |numbers|
+  case numbers
+  in [a, b, c] if b == a + 1 && c == b + 1
+    # 要素が3つの配列かつ、3つの連続した整数であればマッチ
+    # 値が連続しているかどうかはガード式で判定する
+    puts "matched: #{numbers}"
+  else
+    puts "not matched: #{numbers}"
+  end
+end
+
+# n,2のパターンは1、2にマッチする。ガード条件も真となる(マッチ成功)
+case [1, 2, 3, 2, 1]
+in [*, n, 2, *] if n == 1
+  "matched: #{n}"
+else
+  'not matched'
+end
+
+# n,2のパターンは1,2にマッチするが、ガード条件は偽となる
+# データ上、3,2にもマッチするが、再検索は行われない(マッチ失敗)
+case [1, 2, 3, 2, 1]
+in [*, n, 2, *] if n == 3
+  "matched: #{n}"
+else
+  'not matched'
+end
+
+# 1行パターンマッチはマッチの結果をtrue/falseで返す
+[1, 2, 3] in [Integer, Integer, Integer]
+[1, 2, 'x'] in [Integer, Integer, Integer]
+
+person = {name: 'Alice', children: ['Bob']}
+if person in {name:, children: [_]}
+  # :nameと:childrenをキーに持ち、なおかつ:childrenが要素1つの配列であれば以下の処理を実行する
+  "Hello, #{name}!"
+end
+
+cars = [
+  {name: 'The Beatle', engine: '105ps'},
+  {name: 'Prius', engine: '98ps', motor: '72ps'},
+  {name: 'Tesla', motor: '306ps'}
+]
+# selectメソッドと1行パターンマッチを使って、キーに:nameと:motorを含むハッシュだけを抽出する
+cars.select do |car|
+  car in {name:, motor:}
+end
+
+[1, 2, 3] in [Integer, Integer, Integer]
+
+# =>を使った1行パターンマッチで変数nameとchildにハッシュの値を代入する
+{name: 'Alice', children: ['Bob']} => {name:, children: [child]}
+name
+child
+
+# 構文上はパターンマッチだが、左から右へ代入しているようにも見える(通称:右代入)
+123 => n
+
+n * 10
+
+words = 'Ruby is fun'
+# 右代入を使えば視線やキャレットを右から左へ戻さずに代入先の変数を読み書きできる
+words.split(' ').map { |word| word.upcase + 'i' * 3}.join(' ') => loud_voice
+loud_voice
+
+123 => n
+123 =>[n, m]
+
