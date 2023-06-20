@@ -545,3 +545,63 @@ in {name: String, age: 18..} => person
   "person = #{person}"
 end
 
+case 2
+in 0 | 1 | 2
+  'matched'
+end
+
+case {name: 'Bob', age:25}
+in {name: 'Alice' | 'Bob' => name, age:}
+  # :nameの値が'Alice'または'Bob'、かつ:ageというキーがあればマッチ
+  # さらに:nameと:ageの値をそれぞれ変数nameとageに代入する
+  "name = #{name}, age = #{age}"
+end
+
+# variableパターンで配列の要素を変数を代入しつつ、alternativeパターンと組み合わせよとすると構文エラーになる
+case [2021, 4, 1]
+in [y, m, d] | Date
+  # 省略
+end
+
+case [2021, 4, 1]
+in [Integer, Integer, Integer]
+  # 整数を3つ含む配列またはDateオブジェクトであればマッチ
+  # さらにマッチしたオブジェクト全体が変数objに代入される
+  "obj = #{obj}"
+end
+
+# 無効なコード
+# もし以下のような書き方を許してしまうと、マッチに成功しても変数aの値が未定義になってしまう
+case 0
+in 0 | a
+  a
+end
+
+case [2021, 4, 1]
+in [_,_] | [_,_,_] # 配列の要素が2個、または3つならマッチ(要素の値は任意)
+  'matched'
+end
+
+case [1, 2, 3, 4, 5]
+in [first, *]
+  "first = #{first}"
+end
+
+case [1, 2, 3, 4, 5]
+in [*, last]
+  "last = #{last}"
+end
+
+case [13, 11, 9, 6, 12, 10, 15, 5, 7, 14]
+in [*, 10.. => a, 10.. => b, 10.. => c, *]
+  # findパターンで配列の中から10以上の整数が3つ連続する部分を抜き出す
+  # 3つの整数はそれぞれ変数a, b, cに代入される
+  "a = #{a}, b = #{b}, c = #{c}"
+end
+
+# findパターンはRuby3.0では実験的機能であるため警告が表示される
+case [1, 2, 3]
+in [*, n, *]
+  # 省略
+end
+
