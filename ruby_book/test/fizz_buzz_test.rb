@@ -14,10 +14,10 @@ class FizzBuzzTest < MiniTest::Test
 end
 
 
-RSpec.describe 'Fizz Buzz' do
-  example 'fizz buzz' do
-    expect(fizz_buzz(1)).to eq '1'
-    expect(fizz_buzz(2)).to eq '2'
-    expect(fizz_buzz(3)).to eq 'Fizz'
-  end
-end
+# RSpec.describe 'Fizz Buzz' do
+#   example 'fizz buzz' do
+#     expect(fizz_buzz(1)).to eq '1'
+#     expect(fizz_buzz(2)).to eq '2'
+#     expect(fizz_buzz(3)).to eq 'Fizz'
+#   end
+# end
