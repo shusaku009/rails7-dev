@@ -773,3 +773,39 @@ case point
 in Point{x: 10, y: 20}
   # 省略
 end
+
+class Point
+  # 省略
+
+  def deconstruct_keys(keys)
+    # 確認用にkeysの内容を表示する
+    puts "keys = #{keys.inspect}"
+    {x: @x, y: @y}
+  end
+
+  # 省略
+end
+
+point = Point.new(10, 20)
+
+# hashパターンで参照されるキーの配列がdeconstruct_keysメソッドに渡される
+point in {x: 10, y: 20}
+point in {x: 10}
+
+# ただし、**restや**nilnおようなパターンが指定された場合は、すべての要素を返す必要があるため、
+# 他のキーの指定の有無にかかわらずnilが渡される
+point in {x: 10, **rest}
+point in {x: 10, y: 20, **nil}
+
+def deconstruct_keys(keys)
+  # 引数のkeysを参照して、必要最小限の要素を返すコード例
+  hash = {}
+  hash[:x] = @x if keys.nil? || keys.include?(:x)
+  hash[:y] = @y if keys.nil? || keys.include?(:y)
+  hash
+end
+
+# キー情報は使わないので引数名をアンダースコア始まりにする
+def deconstruct_keys(_keys)
+  {x: @x, y: @y}
+end
