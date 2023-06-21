@@ -674,3 +674,102 @@ loud_voice
 123 => n
 123 =>[n, m]
 
+# 先にローカル変数のnameを定義しておく
+name = 'Alice'
+
+# パターンマッチを実行する
+case {name: 'Bob', age: 25}
+in {name:, age:}
+  "name = #{name}, age = #{age}"
+end
+
+# 変数nameはパターンマッチによって上書きされる
+name
+
+# パターンマッチを抜けてもパターンマッチ内で代入された変数は使用可能
+age
+
+class Point
+  def initialize(x, y)
+    @x = x
+    @y = y
+  end
+
+  # arrayパターンで呼ばれるメソッド
+  def deconstruct
+    [@x, @y]
+  end
+
+  # hashパターンで呼ばれるメソッド
+  # (引数の_keysの使い道については後述。ここでは未使用)
+  def deconstruct_keys(_keys)
+    {x: @x, y: @y}
+  end
+
+  # 実行結果をわかりやすく表示するためにto_sメソッドもオーバーライドしておく
+  def to_s
+    "x#{@x},y:#{@y}"
+  end
+end
+
+point = Point.new(10, 20)
+
+case point
+in [1, 2]
+  # ここはマッチしない
+in [10, 20]
+  # ここにマッチする
+  'matched'
+end
+
+case point
+in {x: 1, y: 2}
+  # ここにはマッチしない
+in {x: 10, y: 20}
+  # ここにマッチする
+  'matched'
+end
+
+# PointオブジェクトとArrayオブジェクトを混在させた配列を作る
+data = [
+  Point.new(10, 20),
+  [10, 20]
+]
+data.each do |obj|
+  case obj
+  in [10, 20]
+    # PointもArrayもどちらもマッチする
+    puts "obj = #{obj}"
+  end
+end
+
+data.each do |obj|
+  case obj
+  in Point(10, 20)
+    # Pointオブジェクトかつ、配列表現が[10, 20]ならマッチ
+    puts "point = #{obj}"
+  in Array(10, 20)
+    # Arrayオブジェクトかつ、配列表現が[10, 20]ならマッチ
+    puts "array = #{obj}"
+  end
+end
+
+point = Point.new(10, 20)
+
+# クラス名(パターン)の形式を使う場合
+case point
+in Point(x: 10, y: 20)
+  'matched'
+end
+
+# クラス名[パターン]の形式を使う場合
+case point
+in Point[x: 10, y: 20]
+  'matched'
+end
+
+# クラス名{パターン}という構文はないので、以下のコードは構文エラーになる
+case point
+in Point{x: 10, y: 20}
+  # 省略
+end
