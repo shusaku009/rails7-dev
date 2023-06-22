@@ -69,3 +69,17 @@ CSV.foreach('./lib/sample.tsv', col_sep: "\t") do |row|
   puts "1: #{row[0]}, 2: #{row[1]}, 3: #{row[2]}"
 end
 
+# jsonライブラリをrequrieすると配列やハッシュでto_jsonメソッドが使えるようになる
+require 'json'
+
+user = { name: 'ALice', email: 'alice@example.com', age: 20}
+
+# ハッシュをJSON形式の文字列に変換する(Rubyのハッシュに似ているがこれはJSON形式)
+user_json = user.to_json
+puts user_json
+
+# JSON文字列をパースしてハッシュに変換する(デフォルトではキーは文字列になる)
+JSON.parse(user_json)
+
+JSON.parse(user_json, symbolize_names: true)
+
