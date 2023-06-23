@@ -6,3 +6,4 @@ puts Faker::Name.name
 
 # apはAwesome Printによって追加される
 ap ['Alice', 'Bob', 'Carol']
+
